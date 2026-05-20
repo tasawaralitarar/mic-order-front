@@ -53,7 +53,7 @@ function McdOrderFront() {
           <input
             value={terminalNo}
             onChange={(e) => setTerminalNo(e.target.value)}
-            placeholder="25s99-1"
+            placeholder="25S01"
           />
 
           <button
@@ -176,7 +176,7 @@ function McdOrderFront() {
             .filter((m) => selectedItems[m.id])
             .map((m) => (
               <div key={m.id} style={{ border: "1px solid gray", margin: 10, padding: 10 }}>
-                
+
                <img
         src={m.image}
         alt={m.name}
