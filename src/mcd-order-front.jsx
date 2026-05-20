@@ -24,7 +24,7 @@ function McdOrderFront() {
       id: 2,
       name: "チーズバーガー",
       price: 250,
-      image: "/images/cb1.webp",
+      image: "/images/cb1.png",
       description: "チーズ入り"
     },
     {
