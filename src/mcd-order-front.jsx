@@ -17,7 +17,7 @@ function McdOrderFront() {
       id: 1,
       name: "ハンバーガー",
       price: 200,
-      image: "/images/hb.jpg",
+      image: "/images/hb2.png",
       description: "定番のハンバーガー"
     },
     {
@@ -31,7 +31,7 @@ function McdOrderFront() {
       id: 3,
       name: "ポテト",
       price: 180,
-      image: "/images/potato.jpg",
+      image: "/images/potato3.png",
       description: "人気サイドメニュー"
     }
   ];
