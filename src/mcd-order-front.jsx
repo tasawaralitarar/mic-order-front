@@ -176,6 +176,16 @@ function McdOrderFront() {
             .filter((m) => selectedItems[m.id])
             .map((m) => (
               <div key={m.id} style={{ border: "1px solid gray", margin: 10, padding: 10 }}>
+                
+               <img
+        src={m.image}
+        alt={m.name}
+        width="120"
+        onError={(e) => {
+          e.target.style.display = "none";
+        }}
+      />
+
                 <p>メニュー: {m.name}</p>
                 <p>単価: {m.price}円</p>
                 <p>数量: {selectedItems[m.id]}</p>
