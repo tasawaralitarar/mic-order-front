@@ -6,6 +6,7 @@ function McdOrderFront() {
   const [terminalNo, setTerminalNo] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedItems, setSelectedItems] = useState({});
+  const [orderNo, setOrderNo] = useState("");
 
   const menus = [
     {
@@ -177,14 +178,14 @@ function McdOrderFront() {
             .map((m) => (
               <div key={m.id} style={{ border: "1px solid gray", margin: 10, padding: 10 }}>
 
-               <img
-        src={m.image}
-        alt={m.name}
-        width="120"
-        onError={(e) => {
-          e.target.style.display = "none";
-        }}
-      />
+                <img
+                  src={m.image}
+                  alt={m.name}
+                  width="120"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
 
                 <p>メニュー: {m.name}</p>
                 <p>単価: {m.price}円</p>
@@ -218,6 +219,11 @@ function McdOrderFront() {
                 (sum, item) => sum + item.unitPrice * item.quantity,
                 0
               );
+
+              const generatedOrderNo =
+                "ORD-" + Date.now().toString().slice(-6);
+
+              setOrderNo(generatedOrderNo);
 
               const orderData = {
                 terminalNo: localStorage.getItem("terminalNo"),
@@ -253,6 +259,10 @@ function McdOrderFront() {
       {screen === "complete" && (
         <div>
           <h2>注文完了画面</h2>
+
+          <h3>注文番号: {orderNo}</h3>
+
+          <p>ご注文ありがとうございます</p>
         </div>
       )}
 
