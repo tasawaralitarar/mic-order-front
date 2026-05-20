@@ -17,21 +17,21 @@ function McdOrderFront() {
       id: 1,
       name: "ハンバーガー",
       price: 200,
-      image: "/images/image01.png",
+      image: "/images/hb.jpg",
       description: "定番のハンバーガー"
     },
     {
       id: 2,
       name: "チーズバーガー",
       price: 250,
-      image: "/images/image02.png",
+      image: "/images/cb.webp",
       description: "チーズ入り"
     },
     {
       id: 3,
       name: "ポテト",
       price: 180,
-      image: "/images/image03.png",
+      image: "/images/potato.jpg",
       description: "人気サイドメニュー"
     }
   ];
