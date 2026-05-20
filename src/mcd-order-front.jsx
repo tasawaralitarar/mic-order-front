@@ -283,12 +283,81 @@ function McdOrderFront() {
           <h2>注文確認画面</h2>
 
           <button
-            onClick={() =>
-              setScreen("complete")
-            }
-          >
-            注文確定
-          </button>
+  onClick={() => {
+
+    const orderItems = menus
+      .filter(
+        (menu) =>
+          selectedItems[menu.id]
+      )
+      .map((menu) => ({
+        menuName: menu.name,
+        unitPrice: menu.price,
+        quantity:
+          selectedItems[menu.id]
+      }));
+
+    const totalAmount =
+      orderItems.reduce(
+        (sum, item) =>
+          sum +
+          item.unitPrice *
+            item.quantity,
+        0
+      );
+
+    const orderData = {
+      terminalNo:
+        localStorage.getItem(
+          "terminalNo"
+        ),
+
+      messageType:
+        "ORDER_CONFIRM",
+
+      totalAmount: totalAmount,
+
+      items: orderItems
+    };
+
+    const baseUrl =
+      serverUrl.replace(/\/$/, "");
+
+    const apiUrl =
+      `${baseUrl}/api/orders`;
+
+    console.log(
+      "===== Mock API送信開始 ====="
+    );
+
+    console.log(
+      "送信先URL",
+      apiUrl
+    );
+
+    console.log(
+      "HTTPメソッド",
+      "POST"
+    );
+
+    console.log(
+      "送信JSON\n",
+      JSON.stringify(
+        orderData,
+        null,
+        2
+      )
+    );
+
+    console.log(
+      "===== Mock API送信終了 ====="
+    );
+
+    setScreen("complete");
+  }}
+>
+  注文確定
+</button>
         </div>
       )}
 
