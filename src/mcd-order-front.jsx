@@ -2,15 +2,10 @@ import { useState, useEffect } from "react";
 
 function McdOrderFront() {
   const [screen, setScreen] = useState("settings");
-
   const [serverUrl, setServerUrl] = useState("");
-
   const [terminalNo, setTerminalNo] = useState("");
-
   const [errorMessage, setErrorMessage] = useState("");
-
-  const [selectedItems, setSelectedItems] =
-    useState({});
+  const [selectedItems, setSelectedItems] = useState({});
 
   const menus = [
     {
@@ -42,88 +37,44 @@ function McdOrderFront() {
 
   return (
     <div>
-      <h1>
-        アリタサワルハンバーガー屋さん
-      </h1>
+      <h1>アリタサワルハンバーガー屋さん</h1>
 
+      {/* SETTINGS */}
       {screen === "settings" && (
         <div>
           <h2>初期設定画面</h2>
 
-          <div>
-            <p>接続先IPアドレス</p>
+          <input
+            value={serverUrl}
+            onChange={(e) => setServerUrl(e.target.value)}
+            placeholder="http://localhost:8080"
+          />
 
-            <input
-              type="text"
-              value={serverUrl}
-              onChange={(e) =>
-                setServerUrl(e.target.value)
-              }
-              placeholder="http://localhost:8080"
-            />
-          </div>
-
-          <div>
-            <p>端末番号</p>
-
-            <input
-              type="text"
-              value={terminalNo}
-              onChange={(e) =>
-                setTerminalNo(e.target.value)
-              }
-              placeholder="25s99-1"
-            />
-          </div>
+          <input
+            value={terminalNo}
+            onChange={(e) => setTerminalNo(e.target.value)}
+            placeholder="25s99-1"
+          />
 
           <button
             onClick={() => {
-              if (!serverUrl) {
-                setErrorMessage(
-                  "接続先IPアドレスを入力してください"
-                );
-
+              if (!serverUrl || !terminalNo) {
+                setErrorMessage("入力してください");
                 setScreen("error");
-
-                return;
-              }
-
-              if (!terminalNo) {
-                setErrorMessage(
-                  "端末番号を入力してください"
-                );
-
-                setScreen("error");
-
                 return;
               }
 
               if (
-                !serverUrl.startsWith(
-                  "http://"
-                ) &&
-                !serverUrl.startsWith(
-                  "https://"
-                )
+                !serverUrl.startsWith("http://") &&
+                !serverUrl.startsWith("https://")
               ) {
-                setErrorMessage(
-                  "URLは http:// または https:// から始めてください"
-                );
-
+                setErrorMessage("URLエラー");
                 setScreen("error");
-
                 return;
               }
 
-              localStorage.setItem(
-                "serverUrl",
-                serverUrl
-              );
-
-              localStorage.setItem(
-                "terminalNo",
-                terminalNo
-              );
+              localStorage.setItem("serverUrl", serverUrl);
+              localStorage.setItem("terminalNo", terminalNo);
 
               setScreen("menu");
             }}
@@ -133,76 +84,41 @@ function McdOrderFront() {
         </div>
       )}
 
+      {/* MENU */}
       {screen === "menu" && (
         <div>
           <h2>メニュー選択画面</h2>
 
           {menus.map((menu) => (
-            <div
-              key={menu.id}
-              style={{
-                border:
-                  "1px solid gray",
-                margin: "20px",
-                padding: "20px"
-              }}
-            >
-              <img
-                src={menu.image}
-                alt={menu.name}
-                width="150"
-              />
+            <div key={menu.id} style={{ border: "1px solid gray", margin: 10, padding: 10 }}>
+              <img src={menu.image} width="120" />
 
               <h3>{menu.name}</h3>
+              <p>{menu.description}</p>
+              <p>{menu.price}円</p>
 
-              <p>
-                {menu.description}
-              </p>
-
-              <p>
-                {menu.price}円
-              </p>
-
-              {!selectedItems[
-                menu.id
-              ] ? (
+              {!selectedItems[menu.id] ? (
                 <button
-                  onClick={() => {
+                  onClick={() =>
                     setSelectedItems({
                       ...selectedItems,
                       [menu.id]: 1
-                    });
-                  }}
+                    })
+                  }
                 >
                   選択
                 </button>
               ) : (
                 <div>
-                  <p>
-                    数量:
-                    {
-                      selectedItems[
-                        menu.id
-                      ]
-                    }
-                  </p>
+                  <p>数量: {selectedItems[menu.id]}</p>
 
                   <button
                     onClick={() => {
-                      if (
-                        selectedItems[
-                          menu.id
-                        ] < 5
-                      ) {
-                        setSelectedItems(
-                          {
-                            ...selectedItems,
-                            [menu.id]:
-                              selectedItems[
-                                menu.id
-                              ] + 1
-                          }
-                        );
+                      if (selectedItems[menu.id] < 5) {
+                        setSelectedItems({
+                          ...selectedItems,
+                          [menu.id]: selectedItems[menu.id] + 1
+                        });
                       }
                     }}
                   >
@@ -211,20 +127,11 @@ function McdOrderFront() {
 
                   <button
                     onClick={() => {
-                      if (
-                        selectedItems[
-                          menu.id
-                        ] > 1
-                      ) {
-                        setSelectedItems(
-                          {
-                            ...selectedItems,
-                            [menu.id]:
-                              selectedItems[
-                                menu.id
-                              ] - 1
-                          }
-                        );
+                      if (selectedItems[menu.id] > 1) {
+                        setSelectedItems({
+                          ...selectedItems,
+                          [menu.id]: selectedItems[menu.id] - 1
+                        });
                       }
                     }}
                   >
@@ -233,18 +140,9 @@ function McdOrderFront() {
 
                   <button
                     onClick={() => {
-                      const updated =
-                        {
-                          ...selectedItems
-                        };
-
-                      delete updated[
-                        menu.id
-                      ];
-
-                      setSelectedItems(
-                        updated
-                      );
+                      const updated = { ...selectedItems };
+                      delete updated[menu.id];
+                      setSelectedItems(updated);
                     }}
                   >
                     選択解除
@@ -256,20 +154,11 @@ function McdOrderFront() {
 
           <button
             onClick={() => {
-              if (
-                Object.keys(
-                  selectedItems
-                ).length === 0
-              ) {
-                setErrorMessage(
-                  "メニューを選択してください"
-                );
-
+              if (Object.keys(selectedItems).length === 0) {
+                setErrorMessage("メニューを選択してください");
                 setScreen("error");
-
                 return;
               }
-
               setScreen("confirm");
             }}
           >
@@ -278,107 +167,93 @@ function McdOrderFront() {
         </div>
       )}
 
+      {/* CONFIRM */}
       {screen === "confirm" && (
         <div>
           <h2>注文確認画面</h2>
 
+          {menus
+            .filter((m) => selectedItems[m.id])
+            .map((m) => (
+              <div key={m.id} style={{ border: "1px solid gray", margin: 10, padding: 10 }}>
+                <p>メニュー: {m.name}</p>
+                <p>単価: {m.price}円</p>
+                <p>数量: {selectedItems[m.id]}</p>
+                <p>小計: {m.price * selectedItems[m.id]}円</p>
+              </div>
+            ))}
+
+          <h3>
+            合計:{" "}
+            {menus
+              .filter((m) => selectedItems[m.id])
+              .reduce(
+                (sum, m) => sum + m.price * selectedItems[m.id],
+                0
+              )}
+            円
+          </h3>
+
           <button
-  onClick={() => {
+            onClick={() => {
+              const orderItems = menus
+                .filter((m) => selectedItems[m.id])
+                .map((m) => ({
+                  menuName: m.name,
+                  unitPrice: m.price,
+                  quantity: selectedItems[m.id]
+                }));
 
-    const orderItems = menus
-      .filter(
-        (menu) =>
-          selectedItems[menu.id]
-      )
-      .map((menu) => ({
-        menuName: menu.name,
-        unitPrice: menu.price,
-        quantity:
-          selectedItems[menu.id]
-      }));
+              const totalAmount = orderItems.reduce(
+                (sum, item) => sum + item.unitPrice * item.quantity,
+                0
+              );
 
-    const totalAmount =
-      orderItems.reduce(
-        (sum, item) =>
-          sum +
-          item.unitPrice *
-            item.quantity,
-        0
-      );
+              const orderData = {
+                terminalNo: localStorage.getItem("terminalNo"),
+                messageType: "ORDER_CONFIRM",
+                totalAmount,
+                items: orderItems
+              };
 
-    const orderData = {
-      terminalNo:
-        localStorage.getItem(
-          "terminalNo"
-        ),
+              const baseUrl = localStorage
+                .getItem("serverUrl")
+                .replace(/\/$/, "");
 
-      messageType:
-        "ORDER_CONFIRM",
+              const apiUrl = `${baseUrl}/api/orders`;
 
-      totalAmount: totalAmount,
+              console.log("===== Mock API送信開始 =====");
+              console.log("送信先URL", apiUrl);
+              console.log("HTTPメソッド", "POST");
+              console.log(
+                "送信JSON\n",
+                JSON.stringify(orderData, null, 2)
+              );
+              console.log("===== Mock API送信終了 =====");
 
-      items: orderItems
-    };
-
-    const baseUrl =
-      serverUrl.replace(/\/$/, "");
-
-    const apiUrl =
-      `${baseUrl}/api/orders`;
-
-    console.log(
-      "===== Mock API送信開始 ====="
-    );
-
-    console.log(
-      "送信先URL",
-      apiUrl
-    );
-
-    console.log(
-      "HTTPメソッド",
-      "POST"
-    );
-
-    console.log(
-      "送信JSON\n",
-      JSON.stringify(
-        orderData,
-        null,
-        2
-      )
-    );
-
-    console.log(
-      "===== Mock API送信終了 ====="
-    );
-
-    setScreen("complete");
-  }}
->
-  注文確定
-</button>
+              setScreen("complete");
+            }}
+          >
+            注文確定
+          </button>
         </div>
       )}
 
+      {/* COMPLETE */}
       {screen === "complete" && (
         <div>
           <h2>注文完了画面</h2>
         </div>
       )}
 
+      {/* ERROR */}
       {screen === "error" && (
         <div>
           <h2>エラー画面</h2>
-
           <p>{errorMessage}</p>
 
-          <button
-            onClick={() =>
-              setScreen("settings")
-            }
-          >
-            初期設定画面へ戻る
+          <button onClick={() => setScreen("settings")}>
+            初期設定へ戻る
           </button>
         </div>
       )}
