@@ -9,13 +9,42 @@ function McdOrderFront() {
 
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [selectedItems, setSelectedItems] =
+    useState({});
+
+  const menus = [
+    {
+      id: 1,
+      name: "ハンバーガー",
+      price: 200,
+      image: "/images/image01.png",
+      description: "定番のハンバーガー"
+    },
+    {
+      id: 2,
+      name: "チーズバーガー",
+      price: 250,
+      image: "/images/image02.png",
+      description: "チーズ入り"
+    },
+    {
+      id: 3,
+      name: "ポテト",
+      price: 180,
+      image: "/images/image03.png",
+      description: "人気サイドメニュー"
+    }
+  ];
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [screen]);
 
   return (
     <div>
-      <h1>アリタサワルハンバーガー屋さん</h1>
+      <h1>
+        アリタサワルハンバーガー屋さん
+      </h1>
 
       {screen === "settings" && (
         <div>
@@ -27,7 +56,9 @@ function McdOrderFront() {
             <input
               type="text"
               value={serverUrl}
-              onChange={(e) => setServerUrl(e.target.value)}
+              onChange={(e) =>
+                setServerUrl(e.target.value)
+              }
               placeholder="http://localhost:8080"
             />
           </div>
@@ -38,7 +69,9 @@ function McdOrderFront() {
             <input
               type="text"
               value={terminalNo}
-              onChange={(e) => setTerminalNo(e.target.value)}
+              onChange={(e) =>
+                setTerminalNo(e.target.value)
+              }
               placeholder="25s99-1"
             />
           </div>
@@ -66,8 +99,12 @@ function McdOrderFront() {
               }
 
               if (
-                !serverUrl.startsWith("http://") &&
-                !serverUrl.startsWith("https://")
+                !serverUrl.startsWith(
+                  "http://"
+                ) &&
+                !serverUrl.startsWith(
+                  "https://"
+                )
               ) {
                 setErrorMessage(
                   "URLは http:// または https:// から始めてください"
@@ -100,8 +137,141 @@ function McdOrderFront() {
         <div>
           <h2>メニュー選択画面</h2>
 
+          {menus.map((menu) => (
+            <div
+              key={menu.id}
+              style={{
+                border:
+                  "1px solid gray",
+                margin: "20px",
+                padding: "20px"
+              }}
+            >
+              <img
+                src={menu.image}
+                alt={menu.name}
+                width="150"
+              />
+
+              <h3>{menu.name}</h3>
+
+              <p>
+                {menu.description}
+              </p>
+
+              <p>
+                {menu.price}円
+              </p>
+
+              {!selectedItems[
+                menu.id
+              ] ? (
+                <button
+                  onClick={() => {
+                    setSelectedItems({
+                      ...selectedItems,
+                      [menu.id]: 1
+                    });
+                  }}
+                >
+                  選択
+                </button>
+              ) : (
+                <div>
+                  <p>
+                    数量:
+                    {
+                      selectedItems[
+                        menu.id
+                      ]
+                    }
+                  </p>
+
+                  <button
+                    onClick={() => {
+                      if (
+                        selectedItems[
+                          menu.id
+                        ] < 5
+                      ) {
+                        setSelectedItems(
+                          {
+                            ...selectedItems,
+                            [menu.id]:
+                              selectedItems[
+                                menu.id
+                              ] + 1
+                          }
+                        );
+                      }
+                    }}
+                  >
+                    ＋
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      if (
+                        selectedItems[
+                          menu.id
+                        ] > 1
+                      ) {
+                        setSelectedItems(
+                          {
+                            ...selectedItems,
+                            [menu.id]:
+                              selectedItems[
+                                menu.id
+                              ] - 1
+                          }
+                        );
+                      }
+                    }}
+                  >
+                    −
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const updated =
+                        {
+                          ...selectedItems
+                        };
+
+                      delete updated[
+                        menu.id
+                      ];
+
+                      setSelectedItems(
+                        updated
+                      );
+                    }}
+                  >
+                    選択解除
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+
           <button
-            onClick={() => setScreen("confirm")}
+            onClick={() => {
+              if (
+                Object.keys(
+                  selectedItems
+                ).length === 0
+              ) {
+                setErrorMessage(
+                  "メニューを選択してください"
+                );
+
+                setScreen("error");
+
+                return;
+              }
+
+              setScreen("confirm");
+            }}
           >
             注文確認
           </button>
@@ -113,7 +283,9 @@ function McdOrderFront() {
           <h2>注文確認画面</h2>
 
           <button
-            onClick={() => setScreen("complete")}
+            onClick={() =>
+              setScreen("complete")
+            }
           >
             注文確定
           </button>
@@ -133,7 +305,9 @@ function McdOrderFront() {
           <p>{errorMessage}</p>
 
           <button
-            onClick={() => setScreen("settings")}
+            onClick={() =>
+              setScreen("settings")
+            }
           >
             初期設定画面へ戻る
           </button>
